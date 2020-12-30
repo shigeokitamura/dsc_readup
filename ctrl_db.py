@@ -18,7 +18,7 @@ class News(Base):
     category = Column(String)
     text = Column(String)
     ardnotify = orm.relationship("ArdNotify")
-    
+
     def __repr__(self):
         return "<id={}, cat={}, text={}>".format(self.id, self.category, self.text)
 
@@ -65,7 +65,7 @@ class CountRequest(Base):
     hour = Column(Integer)
     count = Column(Integer, default = 0)
 
-url = 'postgresql+psycopg2://{}@localhost/{}'.format(df['db_user'], df['db_name'])
+url = 'postgresql+psycopg2://{}:{}@localhost/{}'.format(df['db_user'], df['db_password'], df['db_name'])
 engine = create_engine(url)
 
 def main():
@@ -155,7 +155,7 @@ def get_dict(server_id):
 
 def del_dict(id, str_id):
     found_dict = session.query(Dictionaly).filter_by(id=id, server_id=str_id).one_or_none()
-    
+
     if isinstance(found_dict, type(None)):
         return None
     else:
@@ -210,6 +210,6 @@ def set_reqcount(date, time):
         session.commit()
 
         found_rec = session.query(CountRequest).filter_by(date = date, hour = time).one()
-    
+
     found_rec.count += 1
     session.commit()

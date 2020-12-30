@@ -27,10 +27,6 @@ with open('token.json') as f:
 token = df['bot']
 manager = int(df['manager_id'])
 
-# Speakerの配列
-
-sps = ['yukari', 'maki', 'ai', 'kou']
-
 # コマンドプレフィックスを設定
 bot = commands.Bot(command_prefix='?')
 
@@ -58,7 +54,7 @@ async def help(ctx):
         prefix = '?'
     else:
         prefix = guild_deta.prefix
-    
+
     embed = discord.Embed(title='喋太郎', description='メッセージを読み上げるBotやで。')
     embed.add_field(name='{}summon'.format(prefix), value='わいをボイスチャンネルに呼ぶコマンドや。', inline=False)
     embed.add_field(name='{}bye'.format(prefix), value='わいをボイスチャンネルから追い出す時に使うんや。', inline=False)
@@ -67,9 +63,9 @@ async def help(ctx):
     embed.add_field(name='{}stop'.format(prefix), value='わいが喋ってるのを黙らせるで。', inline=False)
     embed.add_field(name='{}wbook'.format(prefix), value='読み仮名の登録とかができるで。詳しくは、「{}wbook help」を見て欲しい。'.format(prefix), inline=False)
     embed.add_field(name='{}readname'.format(prefix), value='コマンドの後に「on」か「off」をつけることで、名前を読み上げるか切り替えられるで。', inline=False)
-    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.5~4.0の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.0や。', inline=False)
-    embed.add_field(name='{}intone'.format(prefix), value='コマンドの後に0.0~2.0の小数をつけることで、抑揚が変わるで。デフォルトは1.1や。', inline=False)
-    embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.0~2.0の小数をつけることで、高さが変わるで。デフォルトは1.2や。', inline=False)
+    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.50~10.00の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.00や。', inline=False)
+    embed.add_field(name='{}intone'.format(prefix), value='コマンドの後に0.50~2.00の小数をつけることで、声質が変わるで。デフォルトは1.00や。', inline=False)
+    # embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.0~2.0の小数をつけることで、高さが変わるで。デフォルトは1.2や。', inline=False)
     embed.add_field(name='{}uranai'.format(prefix), value='おみくじが引けるで。結果は日替わりや。', inline=False)
 
     await ctx.send(embed=embed)
@@ -96,10 +92,10 @@ async def summon(ctx):
     # 召喚された時、voiceに情報が残っている場合
     if guild_id in voice:
         await voice[guild_id].disconnect()
-        del voice[guild_id] 
+        del voice[guild_id]
         del channel[guild_id]
     # 召喚した人がボイスチャンネルにいた場合
-    if not isinstance(vo_ch, type(None)): 
+    if not isinstance(vo_ch, type(None)):
         voice[guild_id] = await vo_ch.channel.connect()
         channel[guild_id] = ctx.channel.id
         noties = get_notify(ctx)
@@ -111,7 +107,7 @@ async def summon(ctx):
     else :
         await ctx.channel.send('あんたボイスチャンネルおらへんやんけ！')
 
-# byeコマンドの処理            
+# byeコマンドの処理
 @bot.command()
 async def bye(ctx):
     global guild_id
@@ -123,7 +119,7 @@ async def bye(ctx):
         await ctx.channel.send('じゃあの')
         await voice[guild_id].disconnect() # ボイスチャンネル切断
         # 情報を削除
-        del voice[guild_id] 
+        del voice[guild_id]
         del channel[guild_id]
 
 # speakerコマンドの処理
@@ -145,28 +141,30 @@ async def spk(ctx, arg1='emp'):
 
     if cand == 'help':
         embed = discord.Embed(title='{}spk'.format(prefix), description='声を変えるコマンド')
-        embed.add_field(name='{}spk yukari'.format(prefix), value='ゆかりさんに変身', inline=False)
-        embed.add_field(name='{}spk maki'.format(prefix), value='マキマキに変身', inline=False)
-        embed.add_field(name='{}spk ai'.format(prefix), value='アイちゃんに変身', inline=False)
-        embed.add_field(name='{}spk kou'.format(prefix), value='コウ先生に変身', inline=False)
+        embed.add_field(name='{}spk 1'.format(prefix), value='あおい(元気なお姉さん)に変身', inline=False)
+        embed.add_field(name='{}spk 2'.format(prefix), value='ひとみ(女性アナウンサー)に変身', inline=False)
+        embed.add_field(name='{}spk 3'.format(prefix), value='ゆい(女声、平常)に変身', inline=False)
+        embed.add_field(name='{}spk 4'.format(prefix), value='ゆい(女声、嬉しい)に変身', inline=False)
+        embed.add_field(name='{}spk 5'.format(prefix), value='ゆい(女声、悲しい)に変身', inline=False)
+        embed.add_field(name='{}spk 6'.format(prefix), value='はづき(落ち着いている女性、平常)に変身', inline=False)
+        embed.add_field(name='{}spk 7'.format(prefix), value='はづき(落ち着いている女性、嬉しい)に変身', inline=False)
+        embed.add_field(name='{}spk 8'.format(prefix), value='はづき(落ち着いている女性、悲しい)に変身', inline=False)
+        embed.add_field(name='{}spk 9'.format(prefix), value='かずひろ(男声、平常)に変身', inline=False)
+        embed.add_field(name='{}spk 10'.format(prefix), value='かずひろ(男声、嬉しい)に変身', inline=False)
+        embed.add_field(name='{}spk 11'.format(prefix), value='かずひろ(男声、悲しい)に変身', inline=False)
+        embed.add_field(name='{}spk 12'.format(prefix), value='ひまり(女の子)に変身', inline=False)
+        embed.add_field(name='{}spk 13'.format(prefix), value='しんいち(男の子)に変身', inline=False)
+        embed.add_field(name='{}spk 14'.format(prefix), value='たつや(執事)に変身', inline=False)
+        embed.add_field(name='{}spk 15'.format(prefix), value='はな(お婆さん)に変身', inline=False)
 
         await ctx.send(embed=embed)
     else:
         # 呼び出したチャンネルでコマンドが叩かれた場合
         if ctx.channel.id == channel[guild_id]:
-            if cand not in sps:
+            if cand not in [str(i) for i in range(1, 16)]:
                 # 引き数のキャラが存在しない場合
                 await ctx.channel.send('おっと、そのキャラは未実装だ。すまねえ。')
                 return
-            elif cand == 'yukari':
-                # ゆかりの場合
-                cand = 'sumire'
-            elif cand == 'ai':
-                # アイの場合
-                cand = 'anzu'
-            elif cand == 'kou':
-                # コウの場合
-                cand = 'osamu'
 
             # 話者を設定
             ctrl_db.set_user(str(ctx.author.id), cand)
@@ -250,6 +248,7 @@ async def wbook(ctx, arg1='emp', arg2='emp', arg3='emp'):
             await ctx.send('引数が不足してるで。{}wbook helpを見てみ。'.format(prefix))
         # 辞書追加、あるいはアップデート
         ctrl_db.add_dict(arg2, arg3, str_id)
+        await ctx.send('登録したで。')
 
     elif arg1 == 'delete':
         if arg2 == 'emp':
@@ -280,8 +279,10 @@ async def readname(ctx, arg1='emp'):
         await ctx.send('引数が不足してるで。{}helpを見てみ。'.format(prefix))
     elif arg1 == 'on':
         ctrl_db.set_nameread(True, str_id)
+        await ctx.send('名前を読み上げるようにしたで。'.format(prefix))
     elif arg1 == 'off':
         ctrl_db.set_nameread(False, str_id)
+        await ctx.send('名前を読み上げへんようにしたで。'.format(prefix))
     else:
         await ctx.send('使い方が正しくないで。{}helpを見てみ。'.format(prefix))
 
@@ -307,10 +308,11 @@ async def speed(ctx, arg1='emp'):
         await ctx.send('使い方が正しくないで。{}helpを見てみ。'.format(prefix))
         return
 
-    if speed >= 0.5 and speed <= 4.0:
+    if speed >= 0.50 and speed <= 10.00:
         ctrl_db.set_readspeed(speed, struid)
+        await ctx.send('読み上げ速度を{}に設定したで。'.format(speed))
     else:
-        await ctx.send('数値が正しくないで。0.5~4.0を指定してくれな。デフォルトは1.0や。')
+        await ctx.send('数値が正しくないで。0.50~10.00を指定してくれな。デフォルトは1.00や。')
 
 @bot.command()
 async def intone(ctx, arg1='emp'):
@@ -389,7 +391,7 @@ async def on_message(message):
         return
     global voice
     global channel
-    
+
     mess_id = message.author.id # メッセージを送った人のユーザID
 
     # ギルドIDがない場合、DMと判断する
@@ -413,8 +415,8 @@ async def on_message(message):
     # ユーザ情報(speaker)を取得
     user = ctrl_db.get_user(str(mess_id))
     if isinstance(user, type(None)):
-        # ユーザ情報がなければ、dbへ登録。話者はsumire
-        ctrl_db.add_user(str(mess_id), message.author.name, 'sumire')
+        # ユーザ情報がなければ、dbへ登録。話者はあおい。
+        ctrl_db.add_user(str(mess_id), message.author.name, "1")
         user = ctrl_db.get_user(str(mess_id))
 
     # サーバのプレフィックスを取得
@@ -434,7 +436,7 @@ async def on_message(message):
     # 召喚されていなかった場合
     if guild_id not in channel:
         return
-    
+
     str_guild_id = str(guild_id)
 
     # メッセージを、呼び出されたチャンネルで受信した場合
@@ -484,14 +486,14 @@ async def on_message(message):
         except:
             await message.channel.send('To {} ちょいとエラー起きたみたいや。少し待ってからメッセージ送ってくれな。'.format(message.author.name))
             return
-        
+
         # 音声ファイルを再生中の場合再生終了まで止まる
         while (voice[guild_id].is_playing()):
             # 他の処理をさせて1秒待機
             await asyncio.sleep(1)
         # 再生処理
         voice_mess = './cache/{}/{}'.format(str_guild_id, rawfile) # rawファイルのディレクトリ
-        voice[guild_id].play(discord.FFmpegPCMAudio(voice_mess, before_options='-f s16be -ar 16k -ac 1')) # エンコードして音声チャンネルで再生
+        voice[guild_id].play(discord.FFmpegPCMAudio(voice_mess)) # エンコードして音声チャンネルで再生
         await asyncio.sleep(0.5)
         os.remove(voice_mess) #rawファイルの削除
 
@@ -518,7 +520,7 @@ def get_notify(ctx):
         if is_notify == False:
             list_noty.append('[{}] {}'.format(new.category, new.text))
             ctrl_db.add_notify(new.id, str_id)
-    
+
     return list_noty
 
 bot.run(token)
