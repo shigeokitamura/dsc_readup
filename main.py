@@ -130,6 +130,26 @@ async def spk(ctx, arg1='emp'):
     guild_id = ctx.guild.id
     str_id = str(guild_id)
     guild_deta = ctrl_db.get_guild(str_id)
+
+    spk_name = [
+                None,
+                "あおい(元気なお姉さん)",
+                "ひとみ(女性アナウンサー)",
+                "ゆい(女声、平常)",
+                "ゆい(女声、嬉しい)",
+                "ゆい(女声、悲しい)",
+                "はづき(落ち着いている女性、平常)",
+                "はづき(落ち着いている女性、嬉しい)",
+                "はづき(落ち着いている女性、悲しい)",
+                "かずひろ(男声、平常)",
+                "かずひろ(男声、嬉しい)",
+                "かずひろ(男声、悲しい)",
+                "ひまり(女の子)",
+                "しんいち(男の子)",
+                "たつや(執事)",
+                "はな(お婆さん)"
+               ]
+
     if isinstance(guild_deta, type(None)):
         prefix = '?'
     else:
@@ -141,21 +161,8 @@ async def spk(ctx, arg1='emp'):
 
     if cand == 'help':
         embed = discord.Embed(title='{}spk'.format(prefix), description='声を変えるコマンド')
-        embed.add_field(name='{}spk 1'.format(prefix), value='あおい(元気なお姉さん)に変身', inline=False)
-        embed.add_field(name='{}spk 2'.format(prefix), value='ひとみ(女性アナウンサー)に変身', inline=False)
-        embed.add_field(name='{}spk 3'.format(prefix), value='ゆい(女声、平常)に変身', inline=False)
-        embed.add_field(name='{}spk 4'.format(prefix), value='ゆい(女声、嬉しい)に変身', inline=False)
-        embed.add_field(name='{}spk 5'.format(prefix), value='ゆい(女声、悲しい)に変身', inline=False)
-        embed.add_field(name='{}spk 6'.format(prefix), value='はづき(落ち着いている女性、平常)に変身', inline=False)
-        embed.add_field(name='{}spk 7'.format(prefix), value='はづき(落ち着いている女性、嬉しい)に変身', inline=False)
-        embed.add_field(name='{}spk 8'.format(prefix), value='はづき(落ち着いている女性、悲しい)に変身', inline=False)
-        embed.add_field(name='{}spk 9'.format(prefix), value='かずひろ(男声、平常)に変身', inline=False)
-        embed.add_field(name='{}spk 10'.format(prefix), value='かずひろ(男声、嬉しい)に変身', inline=False)
-        embed.add_field(name='{}spk 11'.format(prefix), value='かずひろ(男声、悲しい)に変身', inline=False)
-        embed.add_field(name='{}spk 12'.format(prefix), value='ひまり(女の子)に変身', inline=False)
-        embed.add_field(name='{}spk 13'.format(prefix), value='しんいち(男の子)に変身', inline=False)
-        embed.add_field(name='{}spk 14'.format(prefix), value='たつや(執事)に変身', inline=False)
-        embed.add_field(name='{}spk 15'.format(prefix), value='はな(お婆さん)に変身', inline=False)
+        for i in range(1, 16):
+            embed.add_field(name='{}spk {}'.format(prefix, i), value='{}に変身'.format(spk_name[i]), inline=False)
 
         await ctx.send(embed=embed)
     else:
@@ -168,6 +175,7 @@ async def spk(ctx, arg1='emp'):
 
             # 話者を設定
             ctrl_db.set_user(str(ctx.author.id), cand)
+            await ctx.channel.send('話者を{}に設定したで。'.format(spk_name[int(cand)]))
 
 @bot.command()
 async def set_prefix(ctx, arg1):
