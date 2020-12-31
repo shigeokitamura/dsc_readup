@@ -46,8 +46,8 @@ class User(Base):
     name = Column(String)
     speaker = Column(String)
     speed = Column(Float, default=1)
-    r_range = Column(Float, default=1.1)
-    pitch = Column(Float, default=1.2)
+    r_range = Column(Float, default=1)
+    pitch = Column(Float, default=1)
 
 class Dictionaly(Base):
     __tablename__ = 'dictionaly'

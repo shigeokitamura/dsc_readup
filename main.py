@@ -485,11 +485,12 @@ async def on_message(message):
         # モードによって名前を追加するか検討
         if is_nameread == True:
             get_msg = '{}、'.format(message.author.display_name) + get_msg
+        print(get_msg)
         #リクエスト回数のカウント
         ctrl_db.set_reqcount(datetime.date.today(), datetime.datetime.now().hour)
         # メッセージを、音声ファイルを作成するモジュールへ投げる処理
         try :
-            rawfile = await knockApi(get_msg , user.speaker, user.speed, user.r_range, user.pitch, str_guild_id)
+            rawfile = await knockApi(get_msg, user.speaker, user.speed, user.r_range, user.pitch, str_guild_id)
         # 失敗した場合(ログは吐くようにしたい)
         except:
             await message.channel.send('To {} ちょいとエラー起きたみたいや。少し待ってからメッセージ送ってくれな。'.format(message.author.name))
@@ -502,7 +503,9 @@ async def on_message(message):
         # 再生処理
         voice_mess = './cache/{}/{}'.format(str_guild_id, rawfile) # rawファイルのディレクトリ
         voice[guild_id].play(discord.FFmpegPCMAudio(voice_mess)) # エンコードして音声チャンネルで再生
-        await asyncio.sleep(0.5)
+        while (voice[guild_id].is_playing()):
+            # 他の処理をさせて1秒待機
+            await asyncio.sleep(1)
         os.remove(voice_mess) #rawファイルの削除
 
 def add_guild_db(guild):

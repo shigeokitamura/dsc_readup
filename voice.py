@@ -76,7 +76,7 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
     # Docomo APIアクセス
     # ===========================================
     print("Start API")
-
+    print(prm)
     async with aiohttp.ClientSession() as session:
         response = await fetch(session,
             url,
