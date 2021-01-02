@@ -475,16 +475,16 @@ async def on_message(message):
             get_msg = get_msg.replace(me_key, mn_dict[me_key], 1)
         for ch_key in ch_dict.keys():
             get_msg = get_msg.replace(ch_key, ch_dict[ch_key], 1)
-        # 置換文字のリストを取得
-        words = ctrl_db.get_dict(str_guild_id)
-        for word in words:
-            get_msg = get_msg.replace(word.word, word.read)
-        get_msg = get_msg.replace('<', '').replace('>', '')
         # 読み上げモード確認
         is_nameread = ctrl_db.get_guild(str_guild_id).is_nameread
         # モードによって名前を追加するか検討
         if is_nameread == True:
             get_msg = '{}、'.format(message.author.display_name) + get_msg
+        # 置換文字のリストを取得
+        words = ctrl_db.get_dict(str_guild_id)
+        for word in words:
+            get_msg = get_msg.replace(word.word, word.read)
+        get_msg = get_msg.replace('<', '').replace('>', '')
         print(get_msg)
         #リクエスト回数のカウント
         ctrl_db.set_reqcount(datetime.date.today(), datetime.datetime.now().hour)
