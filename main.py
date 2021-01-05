@@ -41,6 +41,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    # await bot.change_presence(activity=discord.Game(name="メンテナンス中"))
 
 # 標準のhelpコマンドを無効化
 bot.remove_command('help')
@@ -63,9 +64,9 @@ async def help(ctx):
     embed.add_field(name='{}stop'.format(prefix), value='わいが喋ってるのを黙らせるで。', inline=False)
     embed.add_field(name='{}wbook'.format(prefix), value='読み仮名の登録とかができるで。詳しくは、「{}wbook help」を見て欲しい。'.format(prefix), inline=False)
     embed.add_field(name='{}readname'.format(prefix), value='コマンドの後に「on」か「off」をつけることで、名前を読み上げるか切り替えられるで。', inline=False)
-    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.50~10.00の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.00や。', inline=False)
-    embed.add_field(name='{}intone'.format(prefix), value='コマンドの後に0.50~2.00の小数をつけることで、声質が変わるで。デフォルトは1.00や。', inline=False)
-    # embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.0~2.0の小数をつけることで、高さが変わるで。デフォルトは1.2や。', inline=False)
+    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.5~4.0の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.00や。', inline=False)
+    # embed.add_field(name='{}intone'.format(prefix), value='コマンドの後に0.50~2.00の小数をつけることで、声質が変わるで。デフォルトは1.00や。', inline=False)
+    embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.5~2.0の小数をつけることで、高さが変わるで。デフォルトは1.2や。', inline=False)
     embed.add_field(name='{}uranai'.format(prefix), value='おみくじが引けるで。結果は日替わりや。', inline=False)
 
     await ctx.send(embed=embed)
@@ -133,21 +134,12 @@ async def spk(ctx, arg1='emp'):
 
     spk_name = [
                 None,
-                "あおい(元気なお姉さん)",
-                "ひとみ(女性アナウンサー)",
-                "ゆい(女声、平常)",
-                "ゆい(女声、嬉しい)",
-                "ゆい(女声、悲しい)",
-                "はづき(落ち着いている女性、平常)",
-                "はづき(落ち着いている女性、嬉しい)",
-                "はづき(落ち着いている女性、悲しい)",
-                "かずひろ(男声、平常)",
-                "かずひろ(男声、嬉しい)",
-                "かずひろ(男声、悲しい)",
-                "ひまり(女の子)",
-                "しんいち(男の子)",
-                "たつや(執事)",
-                "はな(お婆さん)"
+                "show(男性)",
+                "haruka(女性)",
+                "hikari(女性)",
+                "takeru(男性)",
+                "santa(サンタ)",
+                "bear(凶暴なクマ)"
                ]
 
     if isinstance(guild_deta, type(None)):
@@ -161,14 +153,14 @@ async def spk(ctx, arg1='emp'):
 
     if cand == 'help':
         embed = discord.Embed(title='{}spk'.format(prefix), description='声を変えるコマンド')
-        for i in range(1, 16):
+        for i in range(1, 7):
             embed.add_field(name='{}spk {}'.format(prefix, i), value='{}に変身'.format(spk_name[i]), inline=False)
 
         await ctx.send(embed=embed)
     else:
         # 呼び出したチャンネルでコマンドが叩かれた場合
         if ctx.channel.id == channel[guild_id]:
-            if cand not in [str(i) for i in range(1, 16)]:
+            if cand not in [str(i) for i in range(1, 7)]:
                 # 引き数のキャラが存在しない場合
                 await ctx.channel.send('おっと、そのキャラは未実装だ。すまねえ。')
                 return
@@ -316,11 +308,11 @@ async def speed(ctx, arg1='emp'):
         await ctx.send('使い方が正しくないで。{}helpを見てみ。'.format(prefix))
         return
 
-    if speed >= 0.50 and speed <= 10.00:
+    if speed >= 0.5 and speed <= 4.0:
         ctrl_db.set_readspeed(speed, struid)
         await ctx.send('読み上げ速度を{}に設定したで。'.format(speed))
     else:
-        await ctx.send('数値が正しくないで。0.50~10.00を指定してくれな。デフォルトは1.00や。')
+        await ctx.send('数値が正しくないで。0.5~4.0を指定してくれな。デフォルトは1.0や。')
 
 @bot.command()
 async def intone(ctx, arg1='emp'):
@@ -371,10 +363,11 @@ async def pitch(ctx, arg1='emp'):
         await ctx.send('使い方が正しくないで。{}helpを見てみ。'.format(prefix))
         return
 
-    if pitch >= 0.0 and pitch <= 2.0:
+    if pitch >= 0.5 and pitch <= 2.0:
         ctrl_db.set_readpitch(pitch, struid)
+        await ctx.send('声の高さを{}に設定したで。'.format(pitch))
     else:
-        await ctx.send('数値が正しくないで。0.0~2.0を指定してくれな。デフォルトは1.2や。')
+        await ctx.send('数値が正しくないで。0.5~2.0を指定してくれな。デフォルトは1.0や。')
 
 @bot.command()
 async def uranai(ctx):
@@ -492,8 +485,8 @@ async def on_message(message):
         try :
             rawfile = await knockApi(get_msg, user.speaker, user.speed, user.r_range, user.pitch, str_guild_id)
         # 失敗した場合(ログは吐くようにしたい)
-        except:
-            await message.channel.send('To {} ちょいとエラー起きたみたいや。少し待ってからメッセージ送ってくれな。'.format(message.author.name))
+        except Exception as e:
+            await message.channel.send('ちょいとエラー起きたみたいや。少し待ってからメッセージ送ってくれな。\n{}'.format(e))
             return
 
         # 音声ファイルを再生中の場合再生終了まで止まる

@@ -18,17 +18,17 @@ with open('token.json') as f:
     df = json.load(f)
 
 
-#Docomo 音声合成 API
-API_KEY = df['docomo']
-url = "https://api.apigw.smt.docomo.ne.jp/futureVoiceCrayon/v1/textToSpeech?APIKEY="+API_KEY
+#VoiceText Web API
+API_KEY = df["voicetext"]
+url = "https://api.voicetext.jp/v1/tts"
 
-async def fetch(session, url, data_fm, headers):
+async def fetch(session, url, data_fm):
     with async_timeout.timeout(10):
-        async with session.post(url, data=data_fm, headers=headers) as response:
+        async with session.post(url, auth=aiohttp.BasicAuth("a8o3kaexy5vj1hv9", ""), data=data_fm) as response:
 
             if response.status != 200 :
                 print("Error API : " + str(response.status))
-                exit()
+                print(await response.json())
 
             return await response.read()
 
@@ -40,29 +40,41 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
     if not os.path.isdir(tmp):
         os.makedirs(tmp)
 
-    # aitalk パラメーター設定
+    # voicetext パラメーター設定
     # ===========================================
 
     """
-    参考）音声合成 | docomo Developer support
-    https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=text_to_speech&p_name=api_7#tag01
+    参考）https://cloud.voicetext.jp/webapi/docs/api
 
-        'speaker' : "nozomi"、"seiji"、"akari"、"anzu"、"hiroshi"、"kaho"、"koutarou"、"maki"、"nanako"、"osamu"、"sumire"
-        'pitch' : ベースライン・ピッチ。 基準値:1.0、範囲:0.50～2.00
-        'range' : ピッチ・レンジ。基準値:1.0、範囲:0.00～2.00
-        'rate' : 読み上げる速度。基準値:1.0、範囲:0.50～4.00
-        'volume' : 音量。基準値:1.0、範囲:0.00～2.00
+        "speaker": "show", "haruka", "hikari", "takeru", "santa", "bear"
+        "speed": 話す速度。基準値:100(%)、範囲:50~400
+        "pitch": 声の高さ。基準値:100(%)、範囲:50~200
+        "text": 本文。
     """
 
+    # パラメーター調整
+    try:
+        speaker_id = int(msger)
+        if speaker_id < 1 or speaker_id > 6:
+            speaker_id = 1
+    except:
+        speaker_id = 1
+
+    if speed < 0.5 or speed > 4.0:
+        speed = 1.0
+
+    if pitch < 0.5 or pitch > 2.0:
+        pitch = 1.0
+
+    speaker = [None, "show", "haruka", "hikari", "takeru", "santa", "bear"]
+
     prm = {
-        "Command": "AP_Synth",
-        "SpeakerID": msger,
-        "StyleID": msger,
-        "SpeechRate": speed,
-        "VoiceType": r_range,
-        "AudioFileFormat": 2,
-        "TextData": makemsg
+        "speaker": speaker[speaker_id],
+        "speed": int(speed * 100),
+        "pitch": int(pitch * 100),
+        "text": makemsg
     }
+
     # パラメーター受取
     # ===========================================
     #%% arguments
@@ -80,11 +92,7 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
     async with aiohttp.ClientSession() as session:
         response = await fetch(session,
             url,
-            data_fm=json.dumps(prm),
-            headers={
-                'Content-Type': 'application/json',
-                'Accept' : 'audio/L16'
-            }
+            data_fm=prm
         )
 
     #現在日時を取得
