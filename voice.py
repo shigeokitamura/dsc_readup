@@ -72,7 +72,7 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
         "speaker": speaker[speaker_id],
         "speed": int(speed * 100),
         "pitch": int(pitch * 100),
-        "text": makemsg
+        "text": makemsg[:120] # APIの文字数制限
     }
 
     # パラメーター受取
@@ -85,7 +85,7 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
     text = args.text
     """
 
-    # Docomo APIアクセス
+    # VoiceText APIアクセス
     # ===========================================
     print("Start API")
     print(prm)

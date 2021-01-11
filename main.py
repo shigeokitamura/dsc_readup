@@ -64,9 +64,9 @@ async def help(ctx):
     embed.add_field(name='{}stop'.format(prefix), value='わいが喋ってるのを黙らせるで。', inline=False)
     embed.add_field(name='{}wbook'.format(prefix), value='読み仮名の登録とかができるで。詳しくは、「{}wbook help」を見て欲しい。'.format(prefix), inline=False)
     embed.add_field(name='{}readname'.format(prefix), value='コマンドの後に「on」か「off」をつけることで、名前を読み上げるか切り替えられるで。', inline=False)
-    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.5~4.0の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.00や。', inline=False)
+    embed.add_field(name='{}speed'.format(prefix), value='コマンドの後に0.5~4.0の小数をつけることで、読み上げ速度が変わるで。デフォルトは1.0や。', inline=False)
     # embed.add_field(name='{}intone'.format(prefix), value='コマンドの後に0.50~2.00の小数をつけることで、声質が変わるで。デフォルトは1.00や。', inline=False)
-    embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.5~2.0の小数をつけることで、高さが変わるで。デフォルトは1.2や。', inline=False)
+    embed.add_field(name='{}pitch'.format(prefix), value='コマンドの後に0.5~2.0の小数をつけることで、高さが変わるで。デフォルトは1.0や。', inline=False)
     embed.add_field(name='{}uranai'.format(prefix), value='おみくじが引けるで。結果は日替わりや。', inline=False)
 
     await ctx.send(embed=embed)
@@ -339,7 +339,7 @@ async def intone(ctx, arg1='emp'):
     if r_range >= 0.0 and r_range <= 2.0:
         ctrl_db.set_readrange(r_range, struid)
     else:
-        await ctx.send('数値が正しくないで。0.0~2.0を指定してくれな。デフォルトは1.1や。')
+        await ctx.send('数値が正しくないで。0.0~2.0を指定してくれな。デフォルトは1.0や。')
 
 @bot.command()
 async def pitch(ctx, arg1='emp'):
