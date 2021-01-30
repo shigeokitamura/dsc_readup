@@ -501,6 +501,49 @@ async def on_message(message):
             await asyncio.sleep(1)
         os.remove(voice_mess) #rawファイルの削除
 
+@bot.event
+async def on_voice_state_update(member,before,after):
+    global voice
+    global channel
+
+    # 誰かがボイスチャンネルに入退室した場合
+    if before.channel != after.channel:
+        # 入室の場合
+        if before.channel is None:
+            guild_id = after.channel.guild.id
+            if guild_id not in channel:
+                return
+            notify_channel = bot.get_channel(channel[guild_id])
+            current_hour = datetime.datetime.now().hour
+            if current_hour <= 4 or current_hour >= 18:
+                greet = 'こんばんは'
+            elif current_hour >= 5 and current_hour <= 10:
+                greet = 'おはよう'
+            elif current_hour >= 11 and current_hour <= 17:
+                greet = 'こんにちは'
+            await notify_channel.send('{}さん、{}やで'.format(member.name, greet))
+        # 退室の場合
+        elif after.channel is None:
+            guild_id = before.channel.guild.id
+            if guild_id not in channel:
+                return
+            notify_channel = bot.get_channel(channel[before.channel.guild.id])
+            await notify_channel.send('{}さん、じゃあの'.format(member.name))
+
+            # 全員が退出した場合
+            if len(before.channel.members) == 1:
+                await notify_channel.send('そして誰もいなくなった')
+                await notify_channel.send('じゃあの')
+                await voice[guild_id].disconnect()
+                del voice[guild_id]
+                del channel[guild_id]
+
+# 存在しないコマンドが入力された時の処理
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CommandNotFound):
+        await ctx.channel.send('そんなコマンドないで')
+
 def add_guild_db(guild):
     str_id = str(guild.id)
     guilds = ctrl_db.get_guild(str_id)
