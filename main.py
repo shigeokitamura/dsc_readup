@@ -388,8 +388,9 @@ async def uranai(ctx):
 # メッセージを受信した時の処理
 @bot.event
 async def on_message(message):
-    if message.author.bot:
-        return
+    print(message)
+    # if message.author.bot:
+    #     return
     global voice
     global channel
 
