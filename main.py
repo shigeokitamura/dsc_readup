@@ -521,14 +521,14 @@ async def on_voice_state_update(member,before,after):
                 greet = 'おはよう'
             elif current_hour >= 11 and current_hour <= 17:
                 greet = 'こんにちは'
-            await notify_channel.send('{}さん、{}やで'.format(member.nick, greet))
+            await notify_channel.send('{}さん、{}やで'.format(member.nick or member.name, greet))
         # 退室の場合
         elif after.channel is None:
             guild_id = before.channel.guild.id
             if guild_id not in channel:
                 return
             notify_channel = bot.get_channel(channel[before.channel.guild.id])
-            await notify_channel.send('{}さん、じゃあの'.format(member.nick))
+            await notify_channel.send('{}さん、じゃあの'.format(member.nick or member.name))
 
             # 全員が退出した場合
             if len(before.channel.members) == 1:
