@@ -478,7 +478,7 @@ async def on_message(message):
         for word in words:
             get_msg = get_msg.replace(word.word, word.read)
         get_msg = get_msg.replace('<', '').replace('>', '')
-        print(get_msg)
+        # print(get_msg)
         #リクエスト回数のカウント
         ctrl_db.set_reqcount(datetime.date.today(), datetime.datetime.now().hour)
         # メッセージを、音声ファイルを作成するモジュールへ投げる処理

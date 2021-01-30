@@ -88,6 +88,7 @@ async def knockApi(makemsg, msger, speed, r_range, pitch, group):
     # VoiceText APIアクセス
     # ===========================================
     print("Start API")
+    print(datetime.datetime.now())
     print(prm)
     async with aiohttp.ClientSession() as session:
         response = await fetch(session,
